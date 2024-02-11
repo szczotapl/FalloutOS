@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34330.188
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FalloutOS", "FalloutOS.csproj", "{6DCDE801-C545-492E-B113-E985E2A973BC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6DCDE801-C545-492E-B113-E985E2A973BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6DCDE801-C545-492E-B113-E985E2A973BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6DCDE801-C545-492E-B113-E985E2A973BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6DCDE801-C545-492E-B113-E985E2A973BC}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3B400D2F-48A0-4422-9C9D-55E7339C398E}
+	EndGlobalSection
+EndGlobal
