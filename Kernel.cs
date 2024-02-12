@@ -158,10 +158,14 @@ namespace FalloutOS
                 }
             }
         }
-
+        private static double ConvertBytesToMB(long bytes)
+        {
+            return bytes / (1024.0 * 1024.0);
+        }
         public static void Sysinfo()
         {
-            var Diskspace = fs.GetTotalSize(@"0:\");
+            var diskSpaceInBytes = fs.GetTotalSize(@"0:\");
+            var diskspace = ConvertBytesToMB(diskSpaceInBytes);
             var fsType = fs.GetFileSystemType(@"0:\");
             if (Cosmos.Core.CPU.GetCPUVendorName().Contains("Intel"))
             {
@@ -210,7 +214,7 @@ namespace FalloutOS
                 Console.Write("Environment isn't virtualized\n");
             }
             Console.Write("Available Free Space: ");
-            Console.Write(Diskspace + "\n");
+            Console.Write(diskspace + "MB\n");
             Console.Write("File System Type: ");
             Console.Write(fsType + "\n");
         }
