@@ -116,6 +116,11 @@ namespace FalloutOS
             }
         }
 
+        public static void Pwd(string[] args)
+        {
+
+        }
+
         public static void Cd(string[] args)
         {
             if (args.Length > 1)
@@ -133,6 +138,7 @@ namespace FalloutOS
                         try
                         {
                             Directory.SetCurrentDirectory(parentDirectory);
+                            Console.WriteLine($"Changed to parent directory: {parentDirectory}");
                         }
                         catch (UnauthorizedAccessException)
                         {
@@ -150,9 +156,27 @@ namespace FalloutOS
                 }
                 else
                 {
+                    string targetDirectory = Path.Combine(Directory.GetCurrentDirectory(), newDirectory);
+
                     try
                     {
-                        Directory.SetCurrentDirectory(newDirectory);
+                        if (Directory.Exists(targetDirectory))
+                        {
+                            // Check if trying to change to the System Directory
+                            if (IsSystemDirectory(targetDirectory))
+                            {
+                                Console.WriteLine("Error: Cannot change to the System Directory.");
+                            }
+                            else
+                            {
+                                Directory.SetCurrentDirectory(targetDirectory);
+                                Console.WriteLine($"Changed to directory: {targetDirectory}");
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine($"Error: Directory '{newDirectory}' not found.");
+                        }
                     }
                     catch (UnauthorizedAccessException)
                     {
@@ -169,6 +193,12 @@ namespace FalloutOS
                 Console.WriteLine("Usage: cd <directory>");
             }
         }
+
+        private static bool IsSystemDirectory(string directoryPath)
+        {
+            return directoryPath.Equals(Path.Combine(Directory.GetCurrentDirectory(), "FalloutOS"), StringComparison.OrdinalIgnoreCase);
+        }
+
 
 
 
