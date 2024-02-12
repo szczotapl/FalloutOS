@@ -228,7 +228,34 @@ namespace FalloutOS
             return $"{number:n1} {suffixes[counter]}";
         }
 
+        public static void Grep(string[] args)
+        {
+            if (args.Length == 3)
+            {
+                string pattern = args[1];
+                string fileToSearch = args[2];
 
+                try
+                {
+                    string[] lines = File.ReadAllLines(fileToSearch);
+                    foreach (var line in lines)
+                    {
+                        if (line.Contains(pattern))
+                        {
+                            Console.WriteLine(line);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error searching file: {ex.Message}");
+                }
+            }
+            else
+            {
+                Console.WriteLine("Usage: grep <pattern> <file>");
+            }
+        }
 
         public static void Help()
         {
@@ -239,6 +266,7 @@ namespace FalloutOS
             Console.WriteLine("\n[ Navigation ]");
             Console.WriteLine("  cd <directory>   - Change current directory");
             Console.WriteLine("  ls               - List files and directories in the current directory");
+            Console.WriteLine("  history          - Shows history of executed commands");
 
             Console.WriteLine("\n[ File Operations ]");
             Console.WriteLine("  clear            - Clear the console screen");
@@ -248,6 +276,10 @@ namespace FalloutOS
             Console.WriteLine("  cat <file>       - Display the content of a file");
             Console.WriteLine("  touch <file>     - Create an empty file");
             Console.WriteLine("  miv              - Open MIV - MInimalistic Vi ");
+            Console.WriteLine("  grep <pattern> <file>     - Search for a pattern in a file");
+            Console.WriteLine("  find <directory> -name <filename> - Search for a file by name");
+            Console.WriteLine("  cp <source> <destination> - Copy a file or directory");
+            Console.WriteLine("  mv <source> <destination> - Move (rename) a file or directory");
 
             Console.WriteLine("\n[ System Operations ]");
             Console.WriteLine("  reboot           - Reboots the system");
@@ -255,5 +287,6 @@ namespace FalloutOS
             Console.WriteLine("  beep <freq> <dur>- Play a beep sound with specified frequency and duration");
             Console.WriteLine("  exit             - Shutdown the system");
         }
+
     }
 }

@@ -2,10 +2,8 @@
 using Sys = Cosmos.System;
 using Cosmos.System.FileSystem.VFS;
 using System.IO;
-using PrismAPI;
 using System.Threading;
-using System.Security.Cryptography.X509Certificates;
-using Cosmos.System.FileSystem;
+using System.Collections.Generic;
 
 namespace FalloutOS
 {
@@ -26,6 +24,8 @@ namespace FalloutOS
         private static readonly ConsoleColor DarkMagenta = ConsoleColor.DarkMagenta;
         public static string file;
         public static Sys.FileSystem.CosmosVFS fs = new Sys.FileSystem.CosmosVFS();
+        private static readonly List<string> CommandHistory = new List<string>();
+
         protected override void BeforeRun()
         {
             VFSManager.RegisterVFS(fs);
@@ -34,21 +34,34 @@ namespace FalloutOS
             var availableSpace = fs.GetAvailableFreeSpace(@"0:\");
             var fsType = fs.GetFileSystemType(@"0:\");
             Directory.SetCurrentDirectory(@"0:\");
-            Console.ForegroundColor = Green;
-            Console.WriteLine("Booted FalloutOS!");
-            PlayNote(440, 150); // A4
-            PlayNote(494, 150); // B4
-            PlayNote(523, 150); // C5
-            PlayNote(587, 150); // D5
-            PlayNote(659, 150); // E5
-            Thread.Sleep(500);
-            Console.Clear();
-            Console.WriteLine("=======================================================================");
-            Console.WriteLine($"Available Free Space: {availableSpace}");
-            Console.WriteLine($"File System Type: {fsType}");
-            Console.WriteLine("=======================================================================");
-            Console.ForegroundColor = DarkBlue;
-            Console.WriteLine(@"
+            string historyFilePath = @"0:\FalloutOS\History.txt";
+            string historyDirectory = Path.GetDirectoryName(historyFilePath);
+            if (!Directory.Exists(historyDirectory))
+            {
+                try
+                {
+                    Directory.CreateDirectory(historyDirectory);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error creating directory: {ex.Message}");
+                    return;
+                }
+                Console.ForegroundColor = Green;
+                Console.WriteLine("Booted FalloutOS!");
+                PlayNote(440, 150); // A4
+                PlayNote(494, 150); // B4
+                PlayNote(523, 150); // C5
+                PlayNote(587, 150); // D5
+                PlayNote(659, 150); // E5
+                Thread.Sleep(500);
+                Console.Clear();
+                Console.WriteLine("=======================================================================");
+                Console.WriteLine($"Available Free Space: {availableSpace}");
+                Console.WriteLine($"File System Type: {fsType}");
+                Console.WriteLine("=======================================================================");
+                Console.ForegroundColor = DarkBlue;
+                Console.WriteLine(@"
    ____     ____          __  ____  ____   |
   / __/__ _/ / /__  __ __/ /_/ __ \/ __/   |   By .riviox
  / _// _ `/ / / _ \/ // / __/ /_/ /\ \     |
@@ -56,23 +69,24 @@ namespace FalloutOS
                                            |
                                         ");
 
-            try
-            {
-                string currentDirectory = Directory.GetCurrentDirectory();
-                Console.WriteLine("Current Directory: " + currentDirectory);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error getting current directory: {ex.Message}");
+                try
+                {
+                    string currentDirectory = Directory.GetCurrentDirectory();
+                    Console.WriteLine("Current Directory: " + currentDirectory);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error getting current directory: {ex.Message}");
+                }
+
+                Console.WriteLine("FalloutOS booted successfully.");
             }
 
-            Console.WriteLine("FalloutOS booted successfully.");
-        }
-
-        static void PlayNote(int frequency, int duration)
-        {
-            Console.Beep(frequency, duration);
-            Thread.Sleep(duration);
+            static void PlayNote(int frequency, int duration)
+            {
+                Console.Beep(frequency, duration);
+                Thread.Sleep(duration);
+            }
         }
 
         protected override void Run()
@@ -84,6 +98,8 @@ namespace FalloutOS
             Console.ForegroundColor = Cyan;
             Console.Write($"\n{Directory.GetCurrentDirectory()} $ ");
             string input = Console.ReadLine();
+            CommandHistory.Add(input);
+            SaveCommandHistory();
             string[] args = input.Split(' ');
 
             if (args.Length > 0)
@@ -141,6 +157,9 @@ namespace FalloutOS
                     case "reboot":
                         Sys.Power.Reboot();
                         break;
+                    case "history":
+                        ShowCommandHistory();
+                        break;
                     case "touch":
                         Commands.Touch(args);
                         break;
@@ -150,22 +169,48 @@ namespace FalloutOS
                     case "date":
                         Console.WriteLine(DateTime.Now);
                         break;
+                    case "grep":
+                        Commands.Grep(args);
+                        break;
                     default:
-                        Console.ForegroundColor = Red;
+                        Console.ForegroundColor = ConsoleColor.Red;
                         Console.WriteLine($"Command '{command}' not recognized. Type 'help' for available commands.");
-                        Console.ForegroundColor = White;
+                        Console.ForegroundColor = ConsoleColor.White;
                         break;
                 }
+
             }
         }
-        private static double ConvertBytesToMB(long bytes)
+
+        static void PlayNote(int frequency, int duration)
         {
-            return bytes / (1024.0 * 1024.0);
+            Console.Beep(frequency, duration);
+            Thread.Sleep(duration);
+        }
+
+        private static void ShowCommandHistory()
+        {
+            Console.WriteLine("Command History:");
+            for (int i = 0; i < CommandHistory.Count; i++)
+            {
+                Console.WriteLine($"  {i + 1}. {CommandHistory[i]}");
+            }
+        }
+        private static void SaveCommandHistory()
+        {
+            string historyFilePath = @"0:\FalloutOS\History.txt";
+            try
+            {
+                File.WriteAllLines(historyFilePath, CommandHistory);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error saving command history: {ex.Message}");
+            }
         }
         public static void Sysinfo()
         {
-            var diskSpaceInBytes = fs.GetTotalSize(@"0:\");
-            var diskspace = ConvertBytesToMB(diskSpaceInBytes);
+            var Diskspace = fs.GetTotalSize(@"0:\");
             var fsType = fs.GetFileSystemType(@"0:\");
             if (Cosmos.Core.CPU.GetCPUVendorName().Contains("Intel"))
             {
@@ -214,7 +259,7 @@ namespace FalloutOS
                 Console.Write("Environment isn't virtualized\n");
             }
             Console.Write("Available Free Space: ");
-            Console.Write(diskspace + "MB\n");
+            Console.Write(Diskspace + "\n");
             Console.Write("File System Type: ");
             Console.Write(fsType + "\n");
         }
