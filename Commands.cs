@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Sys = Cosmos.System;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -9,16 +10,15 @@ namespace FalloutOS
 {
     internal class Commands
     {
-        public static void  Mkdir(string[] args)
+        public static void Mkdir(string[] args)
         {
             if (args.Length > 1)
             {
-                string newDirectory = args[1];
-                string fullPath = Path.Combine(Directory.GetCurrentDirectory(), newDirectory);
+                string newDirectory = string.Join(" ", args.Skip(1));
 
                 try
                 {
-                    Directory.CreateDirectory(fullPath);
+                    Directory.CreateDirectory(newDirectory);
                 }
                 catch (Exception ex)
                 {
@@ -31,16 +31,15 @@ namespace FalloutOS
             }
         }
 
-        public static void  Rm(string[] args)
+        public static void Rm(string[] args)
         {
             if (args.Length > 1)
             {
-                string fileToDelete = args[1];
-                string fullPath = Path.Combine(Directory.GetCurrentDirectory(), fileToDelete);
+                string fileToDelete = string.Join(" ", args.Skip(1));
 
                 try
                 {
-                    File.Delete(fullPath);
+                    File.Delete(fileToDelete);
                 }
                 catch (Exception ex)
                 {
@@ -53,16 +52,15 @@ namespace FalloutOS
             }
         }
 
-        public static void  Rmdir(string[] args)
+        public static void Rmdir(string[] args)
         {
             if (args.Length > 1)
             {
-                string directoryToDelete = args[1];
-                string fullPath = Path.Combine(Directory.GetCurrentDirectory(), directoryToDelete);
+                string directoryToDelete = string.Join(" ", args.Skip(1));
 
                 try
                 {
-                    Directory.Delete(fullPath);
+                    Directory.Delete(directoryToDelete);
                 }
                 catch (Exception ex)
                 {
@@ -75,16 +73,15 @@ namespace FalloutOS
             }
         }
 
-        public static void  Cat(string[] args)
+        public static void Cat(string[] args)
         {
             if (args.Length > 1)
             {
-                string fileToRead = args[1];
-                string fullPath = Path.Combine(Directory.GetCurrentDirectory(), fileToRead);
+                string fileToRead = string.Join(" ", args.Skip(1));
 
                 try
                 {
-                    string content = File.ReadAllText(fullPath);
+                    string content = File.ReadAllText(fileToRead);
                     Console.WriteLine(content);
                 }
                 catch (Exception ex)
@@ -98,16 +95,15 @@ namespace FalloutOS
             }
         }
 
-        public static void  Touch(string[] args)
+        public static void Touch(string[] args)
         {
             if (args.Length > 1)
             {
-                string newFile = args[1];
-                string fullPath = Path.Combine(Directory.GetCurrentDirectory(), newFile);
+                string newFile = string.Join(" ", args.Skip(1));
 
                 try
                 {
-                    File.Create(fullPath).Close();
+                    File.Create(newFile).Close();
                 }
                 catch (Exception ex)
                 {
@@ -120,11 +116,11 @@ namespace FalloutOS
             }
         }
 
-        public static void  Cd(string[] args)
+        public static void Cd(string[] args)
         {
             if (args.Length > 1)
             {
-                string newDirectory = args[1];
+                string newDirectory = string.Join(" ", args.Skip(1));
 
                 if (newDirectory == "..")
                 {
@@ -154,18 +150,9 @@ namespace FalloutOS
                 }
                 else
                 {
-                    string fullPath = Path.Combine(Directory.GetCurrentDirectory(), newDirectory);
-
                     try
                     {
-                        if (Directory.Exists(fullPath))
-                        {
-                            Directory.SetCurrentDirectory(fullPath);
-                        }
-                        else
-                        {
-                            Console.WriteLine($"Error: Directory '{newDirectory}' not found.");
-                        }
+                        Directory.SetCurrentDirectory(newDirectory);
                     }
                     catch (UnauthorizedAccessException)
                     {
@@ -185,25 +172,40 @@ namespace FalloutOS
 
 
 
-        public static void  Ls()
+        public static void Echo(string[] args)
+        {
+            if (args.Length > 0)
+            {
+                string message = string.Join(" ", args).Replace("echo", "");
+                Console.WriteLine(message);
+            }
+            else
+            {
+                Console.WriteLine("Usage: Echo <message>");
+            }
+        }
+
+
+        public static void Ls()
         {
             try
             {
                 string currentDirectory = Directory.GetCurrentDirectory();
-                string[] files = Directory.GetFiles(currentDirectory);
                 string[] directories = Directory.GetDirectories(currentDirectory);
+                string[] files = Directory.GetFiles(currentDirectory);
 
-                Console.WriteLine($"\n[  Files in {currentDirectory}:  ]");
-                foreach (var file in files)
-                {
-                    Console.WriteLine(file);
-                }
-
-                Console.WriteLine($"\n[  Directories in {currentDirectory}:  ]");
+                Console.ForegroundColor = ConsoleColor.Green;
                 foreach (var directory in directories)
                 {
-                    Console.WriteLine(directory);
+                    Console.WriteLine($"  {Path.GetFileName(directory)}");
                 }
+
+                Console.ForegroundColor = ConsoleColor.Blue;
+                foreach (var file in files)
+                {
+                    Console.WriteLine($"  {Path.GetFileName(file)}");
+                }
+                Console.ForegroundColor = ConsoleColor.White;
             }
             catch (Exception ex)
             {
@@ -211,20 +213,47 @@ namespace FalloutOS
             }
         }
 
-
-        public static void  Help()
+        private static string FormatBytes(long bytes)
         {
-            Console.WriteLine("Available commands:");
-            Console.WriteLine("cd <directory> - Change current directory");
-            Console.WriteLine("ls - List files and directories in the current directory");
-            Console.WriteLine("clear - Clear the console screen");
-            Console.WriteLine("mkdir <directory> - Create a new directory");
-            Console.WriteLine("rm <file> - Remove (delete) a file");
-            Console.WriteLine("rmdir <directory> - Remove (delete) a directory");
-            Console.WriteLine("cat <file> - Display the content of a file");
-            Console.WriteLine("touch <file> - Create an empty file");
-            Console.WriteLine("help - Show available commands");
-            Console.WriteLine("exit - Shutdown the system");
+            string[] suffixes = { "B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB" };
+            int counter = 0;
+            decimal number = bytes;
+
+            while (Math.Round(number / 1024) >= 1)
+            {
+                number /= 1024;
+                counter++;
+            }
+
+            return $"{number:n1} {suffixes[counter]}";
+        }
+
+
+
+        public static void Help()
+        {
+            Console.WriteLine("╔════════════════════════════════════════╗");
+            Console.WriteLine("║     -==== Available Commands ====-     ║");
+            Console.WriteLine("╚════════════════════════════════════════╝");
+
+            Console.WriteLine("\n[ Navigation ]");
+            Console.WriteLine("  cd <directory>   - Change current directory");
+            Console.WriteLine("  ls               - List files and directories in the current directory");
+
+            Console.WriteLine("\n[ File Operations ]");
+            Console.WriteLine("  clear            - Clear the console screen");
+            Console.WriteLine("  mkdir <directory>- Create a new directory");
+            Console.WriteLine("  rm <file>        - Remove (delete) a file");
+            Console.WriteLine("  rmdir <directory>- Remove (delete) a directory");
+            Console.WriteLine("  cat <file>       - Display the content of a file");
+            Console.WriteLine("  touch <file>     - Create an empty file");
+            Console.WriteLine("  miv              - Open MIV - MInimalistic Vi ");
+
+            Console.WriteLine("\n[ System Operations ]");
+            Console.WriteLine("  reboot           - Reboots the system");
+            Console.WriteLine("  help             - Show available commands");
+            Console.WriteLine("  beep <freq> <dur>- Play a beep sound with specified frequency and duration");
+            Console.WriteLine("  exit             - Shutdown the system");
         }
     }
 }
