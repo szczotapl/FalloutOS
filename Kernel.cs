@@ -23,13 +23,13 @@ namespace FalloutOS
         private static readonly ConsoleColor Magenta = ConsoleColor.Magenta;
         private static readonly ConsoleColor DarkMagenta = ConsoleColor.DarkMagenta;
         public static string file;
-        public static Sys.FileSystem.CosmosVFS fs = new Sys.FileSystem.CosmosVFS();
-        private static readonly List<string> CommandHistory = new List<string>();
+        public static Sys.FileSystem.CosmosVFS fs = new();
+        private static readonly List<string> CommandHistory = new();
 
         protected override void BeforeRun()
         {
             VFSManager.RegisterVFS(fs);
-            UserSystem userSystem = new UserSystem();
+            UserSystem userSystem = new();
             userSystem.AddUser("root", "root");
             var availableSpace = fs.GetAvailableFreeSpace(@"0:\");
             var fsType = fs.GetFileSystemType(@"0:\");
@@ -47,21 +47,22 @@ namespace FalloutOS
                     Console.WriteLine($"Error creating directory: {ex.Message}");
                     return;
                 }
-                Console.ForegroundColor = Green;
-                Console.WriteLine("Booted FalloutOS!");
-                PlayNote(440, 150); // A4
-                PlayNote(494, 150); // B4
-                PlayNote(523, 150); // C5
-                PlayNote(587, 150); // D5
-                PlayNote(659, 150); // E5
-                Thread.Sleep(500);
-                Console.Clear();
-                Console.WriteLine("=======================================================================");
-                Console.WriteLine($"Available Free Space: {availableSpace}");
-                Console.WriteLine($"File System Type: {fsType}");
-                Console.WriteLine("=======================================================================");
-                Console.ForegroundColor = DarkBlue;
-                Console.WriteLine(@"
+            }
+            Console.ForegroundColor = Green;
+            Console.WriteLine("Booted FalloutOS!");
+            PlayNote(440, 150); // A4
+            PlayNote(494, 150); // B4
+            PlayNote(523, 150); // C5
+            PlayNote(587, 150); // D5
+            PlayNote(659, 150); // E5
+            Thread.Sleep(500);
+            Console.Clear();
+            Console.WriteLine("=======================================================================");
+            Console.WriteLine($"Available Free Space: {availableSpace}");
+            Console.WriteLine($"File System Type: {fsType}");
+            Console.WriteLine("=======================================================================");
+            Console.ForegroundColor = DarkBlue;
+            Console.WriteLine(@"
    ____     ____          __  ____  ____   |
   / __/__ _/ / /__  __ __/ /_/ __ \/ __/   |   By .riviox
  / _// _ `/ / / _ \/ // / __/ /_/ /\ \     |
@@ -69,18 +70,18 @@ namespace FalloutOS
                                            |
                                         ");
 
-                try
-                {
-                    string currentDirectory = Directory.GetCurrentDirectory();
-                    Console.WriteLine("Current Directory: " + currentDirectory);
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Error getting current directory: {ex.Message}");
-                }
-
-                Console.WriteLine("FalloutOS booted successfully.");
+            try
+            {
+                string currentDirectory = Directory.GetCurrentDirectory();
+                Console.WriteLine("Current Directory: " + currentDirectory);
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error getting current directory: {ex.Message}");
+            }
+
+            Console.WriteLine("FalloutOS booted successfully.");
+            
 
             static void PlayNote(int frequency, int duration)
             {

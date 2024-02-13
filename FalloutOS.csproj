@@ -17,24 +17,13 @@
         <Profile>VMware</Profile>
         <Description>Use VMware Player or Workstation to deploy and debug.</Description>
         <PxeInterface>192.168.0.8</PxeInterface>
-        <DebugEnabled>False</DebugEnabled>
-        <EnableBochsDebug>True</EnableBochsDebug>
-        <StartBochsDebugGui>True</StartBochsDebugGui>
-        <CompileVBEMultiboot>False</CompileVBEMultiboot>
-        <CompressionType>Gzip</CompressionType>
-        <RemoveBootDebugOutput>False</RemoveBootDebugOutput>
     </PropertyGroup>
-
-    <ItemGroup>
-      <None Include="FalloutOS.csproj" />
-      <None Include="FalloutOS.sln" />
-    </ItemGroup>
 
     <ItemGroup>
         <PackageReference Include="Cosmos.Build" Version="0-*" NoWarn="NU1604" />
         <PackageReference Include="Cosmos.Debug.Kernel" Version="0-*" NoWarn="NU1604" />
         <PackageReference Include="Cosmos.System2" Version="0-*" NoWarn="NU1604" />
-        <PackageReference Include="PrismAPI" Version="1.0.3" />
+        <PackageReference Include="Cosmos.Plugs" Version="0-*" NoWarn="NU1604" />
     </ItemGroup>
 
 </Project>

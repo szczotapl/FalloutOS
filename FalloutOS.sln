@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.8.34330.188
+VisualStudioVersion = 17.8.34525.116
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FalloutOS", "FalloutOS.csproj", "{6DCDE801-C545-492E-B113-E985E2A973BC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FalloutOS", "FalloutOS.csproj", "{D30E5E26-5361-4AD9-987A-34B72342EA1F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,15 +11,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{6DCDE801-C545-492E-B113-E985E2A973BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6DCDE801-C545-492E-B113-E985E2A973BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6DCDE801-C545-492E-B113-E985E2A973BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6DCDE801-C545-492E-B113-E985E2A973BC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D30E5E26-5361-4AD9-987A-34B72342EA1F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D30E5E26-5361-4AD9-987A-34B72342EA1F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D30E5E26-5361-4AD9-987A-34B72342EA1F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D30E5E26-5361-4AD9-987A-34B72342EA1F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {3B400D2F-48A0-4422-9C9D-55E7339C398E}
+		SolutionGuid = {77716C19-0862-4A5D-B7B1-5070BE3915B8}
 	EndGlobalSection
 EndGlobal
